@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Maple</string>
+
+    <string name="os_linux">Linux</string>
+    <string name="os_android">Android-x86 / BlissOS</string>
+    <string name="os_win_xp">Windows XP / 2000</string>
+    <string name="os_win_7">Windows Vista / 7</string>
+    <string name="os_win_10">Windows 8 / 10</string>
+    <string name="os_win_11">Windows 11</string>
+    <string name="os_freebsd">FreeBSD</string>
+    <string name="os_openbsd">OpenBSD</string>
+    <string name="os_netbsd">NetBSD</string>
+    <string name="os_dos">DOS / FreeDOS</string>
+    <string name="os_reactos">ReactOS</string>
+    <string name="os_haiku">Haiku</string>
+    <string name="os_other">Other</string>
+
+    <string name="empty_list">No virtual machines yet.\n\nTap “New VM” to boot your own ISO or disk image, or open the OS library to download a free operating system.</string>
+    <string name="none">None</string>
+    <string name="auto">Automatic</string>
+
+    <string name="state_starting">Starting</string>
+    <string name="state_running">Running</string>
+    <string name="state_paused">Paused</string>
+    <string name="state_stopping">Stopping</string>
+    <string name="state_stopped">Stopped</string>
+    <string name="state_suspended">Suspended</string>
+
+    <string name="action_new_vm">New VM</string>
+    <string name="action_library">OS library</string>
+    <string name="action_import_utm">Import UTM VM</string>
+    <string name="action_about">About</string>
+    <string name="action_open">Open</string>
+    <string name="action_start">Start</string>
+    <string name="action_stop">Stop</string>
+    <string name="action_edit">Edit VM</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_discard_state">Discard suspended state</string>
+    <string name="action_shortcut">Add to home screen</string>
+    <string name="action_choose">Choose…</string>
+    <string name="action_eject">Eject</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_new_disk">New disk…</string>
+    <string name="action_save">Save</string>
+    <string name="action_open_settings">Open settings</string>
+    <string name="action_download">Download</string>
+    <string name="action_create_vm">Create VM</string>
+    <string name="action_keep">Keep downloading</string>
+    <string name="action_cancel_download">Cancel download</string>
+
+    <string name="confirm_delete">Delete this VM and its disk? This cannot be undone.</string>
+    <string name="confirm_delete_disk">Delete this VM\'s disk image and everything on it? This cannot be undone.</string>
+    <string name="about_text">Maple runs x86-64 and ARM64 virtual machines on your phone with QEMU. No root, no accounts, no ads, no tracking – your files never leave the device.\n\nQEMU is free software licensed under the GNU GPL version 2; its source code and the build scripts are in the native/qemu directory of this app\'s source tree.\n\nMaple is not affiliated with QEMU, Microsoft, Google or any operating system vendor. All names are trademarks of their respective owners.</string>
+
+    <string name="utm_hint">Choose the .utm folder of the virtual machine (it contains config.plist and a Data folder). Its disk is copied into Maple.</string>
+    <string name="utm_importing">Importing virtual machine…</string>
+    <string name="utm_imported">Virtual machine imported</string>
+
+    <string name="sec_general">General</string>
+    <string name="sec_media">Disks</string>
+    <string name="sec_system">System</string>
+    <string name="sec_display">Display</string>
+    <string name="sec_input">Input</string>
+    <string name="sec_network">Network and sound</string>
+    <string name="sec_share">Shared folder</string>
+
+    <string name="f_name">Name</string>
+    <string name="f_installer">Installer or live image (ISO, IMG)</string>
+    <string name="f_boot_cd_first">Boot the installer image before the disk</string>
+    <string name="f_disk">Hard disk (QCOW2, IMG, VHD, VHDX, VMDK, VDI, QED, Parallels, DMG, Bochs)</string>
+    <string name="f_os">Operating system</string>
+    <string name="f_arch">Architecture</string>
+    <string name="f_firmware">Firmware</string>
+    <string name="f_ram">Memory (MB)</string>
+    <string name="f_cpus">CPU cores</string>
+    <string name="f_profile">Performance profile</string>
+    <string name="f_win11_helper">Windows 11 setup helper (skip TPM, Secure Boot, RAM and CPU checks)</string>
+    <string name="f_suspend_on_stop">Suspend on stop (resume where you left off; needs a QCOW2 disk)</string>
+    <string name="f_resolution">Screen size</string>
+    <string name="f_scaling">Scaling</string>
+    <string name="f_orientation">Orientation</string>
+    <string name="f_high_refresh">Smooth display up to 144 Hz</string>
+    <string name="f_input_mode">Pointer mode</string>
+    <string name="f_pointer_speed">Pointer speed</string>
+    <string name="f_network">Internet access for the guest</string>
+    <string name="f_forwards">Port forwarding (protocol:phone port:guest port)</string>
+    <string name="f_sound">Sound</string>
+    <string name="f_share_writable">Let the guest write to the folder (experimental)</string>
+
+    <string name="profile_balanced">Balanced</string>
+    <string name="profile_max">Max performance</string>
+    <string name="profile_sustained">Sustained (cooler, for long sessions)</string>
+    <string name="scale_fit">Fit screen</string>
+    <string name="scale_stretch">Stretch</string>
+    <string name="scale_integer">Pixel perfect</string>
+    <string name="orient_landscape">Landscape</string>
+    <string name="orient_portrait">Portrait</string>
+    <string name="input_trackpad">Trackpad</string>
+    <string name="input_touch">Direct touch</string>
+    <string name="input_mouse">Physical mouse</string>
+
+    <string name="disk_new">New %1$d GB disk (created when you save)</string>
+    <string name="disk_internal">Internal disk (%1$s)</string>
+    <string name="disk_size_title">New disk</string>
+    <string name="disk_size_text">Size in GB. The image grows as the guest writes to it, so it starts small.</string>
+    <string name="creating_disk">Creating disk…</string>
+    <string name="inspecting">Reading image…</string>
+    <string name="detected">Detected %1$s, %2$s, %3$s</string>
+    <string name="share_hint">The folder appears in the guest as a USB drive. Changes made on the phone show up after the VM restarts.</string>
+    <string name="share_permission">To share a folder, Maple needs the “All files access” permission so that the emulator can read it directly. Nothing is uploaded anywhere.</string>
+
+    <string name="err_name">Give the VM a name</string>
+    <string name="err_ram">Enter between 16 and 16384 MB</string>
+    <string name="err_forwards">Use entries like tcp:2222:22 with phone ports from 1024 to 65535</string>
+    <string name="err_disk_size">Enter a size between 1 and 2048 GB</string>
+    <string name="err_share_path">That folder cannot be shared. Choose a folder on the phone\'s storage or an SD card.</string>
+    <string name="err_no_persist">Access to this file will be lost after a restart; choose it again if the VM stops booting.</string>
+    <string name="err_no_qemu_title">Emulator engine missing</string>
+    <string name="err_no_qemu_text">This build does not contain the QEMU binaries. Run native/qemu/build.sh and rebuild the app.</string>
+    <string name="err_nothing_to_boot">Add an installer image or a disk first</string>
+    <string name="err_shortcut">Your launcher does not support pinned shortcuts</string>
+    <string name="err_vm_missing">This virtual machine no longer exists</string>
+    <string name="err_vm_stopped">The VM stopped</string>
+    <string name="err_spawn">Could not start the emulator process</string>
+    <string name="err_qmp">The emulator did not respond</string>
+    <string name="err_exit">The emulator exited with code %1$d</string>
+    <string name="err_resume_failed">The suspended state could not be restored and was discarded. Start the VM again for a normal boot.</string>
+    <string name="err_save_state">Could not save the state: %1$s</string>
+    <string name="err_load_state">Could not load the state: %1$s</string>
+    <string name="err_not_running">The VM is not running</string>
+    <string name="err_screenshot">Could not take a screenshot</string>
+    <string name="err_pip">Picture-in-picture is not available on this device</string>
+
+    <string name="msg_state_saved">State saved</string>
+    <string name="msg_state_loaded">State loaded</string>
+    <string name="msg_saving_state">Saving state…</string>
+    <string name="msg_screenshot_saved">Screenshot saved to Pictures/Maple</string>
+
+    <string name="status_starting">Starting…</string>
+    <string name="status_resuming">Resuming…</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_paused_heat">Paused – your phone is too hot.\nThe VM resumes when it cools down.</string>
+    <string name="status_stopping">Stopping…</string>
+    <string name="status_saving">Saving state…</string>
+
+    <string name="m_keyboard">Keyboard</string>
+    <string name="m_show_keys">Show extra keys</string>
+    <string name="m_hide_keys">Hide extra keys</string>
+    <string name="m_show_hud">Show HUD</string>
+    <string name="m_hide_hud">Hide HUD</string>
+    <string name="m_pause">Pause</string>
+    <string name="m_resume">Resume</string>
+    <string name="m_unplug">Unplug network cable</string>
+    <string name="m_plug">Plug in network cable</string>
+    <string name="m_screenshot">Screenshot</string>
+    <string name="m_save_state">Save state</string>
+    <string name="m_load_state">Load saved state</string>
+    <string name="m_pip">Picture-in-picture</string>
+    <string name="m_power_button">Press power button</string>
+    <string name="m_reset">Reset</string>
+    <string name="m_suspend">Suspend and close</string>
+    <string name="m_stop_no_save">Stop without saving</string>
+
+    <string name="lib_tap_to_download">Tap to download</string>
+    <string name="lib_downloaded">Downloaded – tap to create another VM</string>
+    <string name="lib_downloading">Downloading %1$s of %2$s</string>
+    <string name="lib_verifying">Verifying checksum…</string>
+    <string name="lib_unpacking">Unpacking…</string>
+    <string name="lib_creating">Creating VM…</string>
+    <string name="lib_done">VM created – find it in your list</string>
+    <string name="lib_cancelled">Cancelled – tap to resume</string>
+    <string name="lib_failed">Failed: %1$s</string>
+    <string name="lib_cancel_question">Cancel this download? The part already downloaded is kept, so you can resume later.</string>
+    <string name="lib_confirm">Download %1$s from the official mirror?\n\n%2$s\n\nThe file is checked against the publisher\'s checksum before it is used.</string>
+    <string name="lib_confirm_reuse">This image (%1$s) is already downloaded. Create a new VM from it?\n\n%2$s</string>
+    <string name="lib_vm_created">%1$s is ready in your VM list</string>
+
+    <string name="channel_running">Running VMs</string>
+    <string name="channel_alerts">Heat and battery warnings</string>
+    <plurals name="note_running">
+        <item quantity="one">%1$d VM running</item>
+        <item quantity="other">%1$d VMs running</item>
+    </plurals>
+    <string name="note_battery_title">Battery is low</string>
+    <string name="note_battery_text">A VM is still running. Shut it down or plug in your phone.</string>
+    <string name="note_heat_title">VM paused: phone too hot</string>
+    <string name="note_heat_text">It resumes automatically once the phone has cooled down.</string>
+    <string name="fgs_reason" translatable="false">Keeps user-started virtual machines (QEMU) running while the app is in the background.</string>
+</resources>

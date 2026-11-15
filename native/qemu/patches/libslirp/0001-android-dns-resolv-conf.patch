@@ -1,0 +1,74 @@
+diff -ruN libslirp-v4.9.7.orig/src/slirp.c libslirp-v4.9.7/src/slirp.c
+--- libslirp-v4.9.7.orig/src/slirp.c	2026-11-15 00:15:38
++++ libslirp-v4.9.7/src/slirp.c	2026-11-15 00:17:07
+@@ -387,6 +387,21 @@
+ 
+ #if defined(__HAIKU__)
+ #define RESOLV_CONF_PATH "/boot/system/settings/network/resolv.conf"
++#elif defined(__ANDROID__)
++/*
++ * Android has no /etc/resolv.conf and no public API for native code to
++ * query the active DNS servers.  The embedding app writes a resolv.conf
++ * style file (from ConnectivityManager/LinkProperties) and exports its
++ * path in SLIRP_RESOLV_CONF.  When the variable is unset or the file is
++ * missing/empty, well-known public resolvers are used instead of the
++ * 127.0.0.1 default (nothing listens there on Android).
++ */
++static const char *android_resolv_conf_path(void)
++{
++    const char *p = getenv("SLIRP_RESOLV_CONF");
++    return (p && *p) ? p : "/etc/resolv.conf";
++}
++#define RESOLV_CONF_PATH android_resolv_conf_path()
+ #else
+ #define RESOLV_CONF_PATH "/etc/resolv.conf"
+ #endif
+@@ -402,7 +417,14 @@
+     }
+     old_stat = *cached_stat;
+     if (stat(RESOLV_CONF_PATH, cached_stat) != 0) {
++#ifdef __ANDROID__
++        /* No file: keep whatever get_dns_addr_resolv_conf() chose. */
++        *cached_time = curtime;
++        memcpy(pdns_addr, cached_addr, addrlen);
++        return 0;
++#else
+         return -1;
++#endif
+     }
+     if (cached_stat->st_dev == old_stat.st_dev &&
+         cached_stat->st_ino == old_stat.st_ino &&
+@@ -470,11 +492,13 @@
+     unsigned nameservers = 0;
+ 
+     f = fopen(RESOLV_CONF_PATH, "r");
++#ifndef __ANDROID__
+     if (!f)
+         return -1;
++#endif
+ 
+     DEBUG_MISC("IP address of your DNS(s):");
+-    while (fgets(buff, 512, f) != NULL) {
++    while (f && fgets(buff, 512, f) != NULL) {
+         if (sscanf(buff, "nameserver%*[ \t]%256s", buff2) == 1) {
+             char *c = strchr(buff2, '%');
+             if (c) {
+@@ -495,7 +519,17 @@
+ 		break;
+         }
+     }
+-    fclose(f);
++    if (f)
++        fclose(f);
++#ifdef __ANDROID__
++    if (!nameservers) {
++        nameservers = 1;
++        found += try_and_setdns_server(af, found, 0,
++                        af == AF_INET ? "8.8.8.8" : "2001:4860:4860::8888",
++                        pdns_addr, cached_addr, addrlen, scope_id,
++                        cached_scope_id, cached_time);
++    }
++#endif
+     if (nameservers && !found)
+         return -1;
+     if (!nameservers) {

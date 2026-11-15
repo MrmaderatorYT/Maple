@@ -1,0 +1,79 @@
+--- qemu-11.1.3.orig/ui/vnc.c	2026-11-15 00:15:09
++++ qemu-11.1.3/ui/vnc.c	2026-11-15 00:16:54
+@@ -58,9 +58,65 @@
+ #include "io/dns-resolver.h"
+ #include "monitor/monitor.h"
+ 
+-#define VNC_REFRESH_INTERVAL_BASE GUI_REFRESH_INTERVAL_DEFAULT
++/*
++ * Maple: the VNC refresh intervals are run-time tunables.
++ *
++ *   MAPLE_VNC_REFRESH_MS      base (fastest) refresh interval in ms,
++ *                             clamped to 4..100, default 30 (upstream
++ *                             GUI_REFRESH_INTERVAL_DEFAULT, ~33 fps).
++ *   MAPLE_VNC_REFRESH_MAX_MS  slowest interval the adaptive back-off may
++ *                             reach while the screen is idle, clamped to
++ *                             base..3000, default 3000 (upstream
++ *                             GUI_REFRESH_INTERVAL_IDLE).
++ *
++ * Both are read once.  The base interval is what the display change
++ * listener hands to the console layer, so it also drives how often the
++ * emulated display adapter is asked to redraw (qemu_console_hw_update()).
++ */
++static int vnc_refresh_env(const char *name, int def, int lo, int hi)
++{
++    const char *s = getenv(name);
++    char *end = NULL;
++    long v;
++
++    if (!s || !*s) {
++        return def;
++    }
++    errno = 0;
++    v = strtol(s, &end, 10);
++    if (errno || end == s || *end != '\0') {
++        return def;
++    }
++    return v < lo ? lo : v > hi ? hi : (int)v;
++}
++
++static int vnc_refresh_interval_base(void)
++{
++    static int base;
++
++    if (!base) {
++        base = vnc_refresh_env("MAPLE_VNC_REFRESH_MS",
++                               GUI_REFRESH_INTERVAL_DEFAULT, 4, 100);
++    }
++    return base;
++}
++
++static int vnc_refresh_interval_max(void)
++{
++    static int max;
++
++    if (!max) {
++        max = vnc_refresh_env("MAPLE_VNC_REFRESH_MAX_MS",
++                              GUI_REFRESH_INTERVAL_IDLE,
++                              vnc_refresh_interval_base(),
++                              GUI_REFRESH_INTERVAL_IDLE);
++    }
++    return max;
++}
++
++#define VNC_REFRESH_INTERVAL_BASE vnc_refresh_interval_base()
+ #define VNC_REFRESH_INTERVAL_INC  50
+-#define VNC_REFRESH_INTERVAL_MAX  GUI_REFRESH_INTERVAL_IDLE
++#define VNC_REFRESH_INTERVAL_MAX  vnc_refresh_interval_max()
+ static const struct timeval VNC_REFRESH_STATS = { 0, 500000 };
+ static const struct timeval VNC_REFRESH_LOSSY = { 2, 0 };
+ 
+@@ -3252,7 +3308,7 @@
+     int has_dirty, rects = 0;
+ 
+     if (QTAILQ_EMPTY(&vd->clients)) {
+-        qemu_console_listener_set_refresh(&vd->dcl, VNC_REFRESH_INTERVAL_MAX);
++        qemu_console_listener_set_refresh(&vd->dcl, GUI_REFRESH_INTERVAL_IDLE);
+         return;
+     }
+ 

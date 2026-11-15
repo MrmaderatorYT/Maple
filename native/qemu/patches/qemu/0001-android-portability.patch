@@ -1,0 +1,190 @@
+--- qemu-11.1.3.orig/meson.build	2026-11-15 00:15:37
++++ qemu-11.1.3/meson.build	2026-11-15 00:38:44
+@@ -1372,7 +1372,8 @@
+ if host_os != 'windows'
+   have_shm_open = cc.has_function('shm_open')
+   if not have_shm_open
+-    rt = cc.find_library('rt', required: true)
++    # bionic: no librt and no shm_open(); util/oslib-posix.c emulates it
++    rt = cc.find_library('rt', required: false)
+   endif
+ endif
+ 
+@@ -2895,9 +2896,6 @@
+     CPU_FREE(cpuset);
+     return 0;
+   }''', dependencies: threads))
+-config_host_data.set('CONFIG_SIGNALFD', cc.links(osdep_prefix + '''
+-  #include <sys/signalfd.h>
+-  int main(void) { return signalfd(-1, NULL, SFD_CLOEXEC); }'''))
+ 
+ config_host_data.set('HAVE_MLOCKALL', cc.links(osdep_prefix + '''
+   #include <sys/mman.h>
+@@ -3256,7 +3254,7 @@
+   'loongarch' : ['CONFIG_LOONGARCH_DIS'],
+ }
+ 
+-have_ivshmem = config_host_data.get('CONFIG_EVENTFD')
++have_ivshmem = false
+ host_kconfig = \
+   (get_option('fuzzing') ? ['CONFIG_FUZZ=y'] : []) + \
+   (have_tpm ? ['CONFIG_TPM=y'] : []) + \
+--- qemu-11.1.3.orig/block.c	2026-11-15 00:15:09
++++ qemu-11.1.3/block.c	2026-11-15 00:16:38
+@@ -863,10 +863,21 @@
+      * so the files can become very large. /tmp is often a tmpfs where as
+      * /var/tmp is usually on a disk, so more appropriate for disk images.
+      */
++#ifdef __ANDROID__
++    /*
++     * Android has neither /tmp nor /var/tmp.  The launcher is expected to
++     * export TMPDIR (g_get_tmp_dir() honours it); only fall back to the
++     * adb-shell scratch directory when it did not.
++     */
++    if (!g_strcmp0(tmpdir, "/tmp") || !g_strcmp0(tmpdir, "/tmp/")) {
++        tmpdir = "/data/local/tmp";
++    }
++#else
+     if (!g_strcmp0(tmpdir, "/tmp")) {
+         tmpdir = "/var/tmp";
+     }
+ #endif
++#endif
+ 
+     filename = g_strdup_printf("%s/vl.XXXXXX", tmpdir);
+     fd = g_mkstemp(filename);
+--- qemu-11.1.3.orig/block/file-posix.c	2026-11-15 00:15:38
++++ qemu-11.1.3/block/file-posix.c	2026-11-15 00:16:38
+@@ -427,7 +427,7 @@
+     bs->bl.request_alignment = 0;
+     s->buf_align = 0;
+ 
+-#if defined(__linux__) && defined(STATX_DIOALIGN)
++#if defined(__linux__) && defined(STATX_DIOALIGN) && !defined(__ANDROID__)
+     struct statx stx;
+ 
+     /*
+@@ -2117,7 +2117,16 @@
+ ssize_t copy_file_range(int in_fd, off_t *in_off, int out_fd,
+                         off_t *out_off, size_t len, unsigned int flags)
+ {
+-#ifdef __NR_copy_file_range
++#if defined(__ANDROID__)
++    /*
++     * bionic only wraps copy_file_range() from API 34, and the raw syscall
++     * is not on the app seccomp allow-list of older Android releases
++     * (SIGSYS kills the process).  Report ENOSYS so the block layer falls
++     * back to a plain read/write copy.
++     */
++    errno = ENOSYS;
++    return -1;
++#elif defined(__NR_copy_file_range)
+     return syscall(__NR_copy_file_range, in_fd, in_off, out_fd,
+                    out_off, len, flags);
+ #else
+--- qemu-11.1.3.orig/util/oslib-posix.c	2026-11-15 00:15:10
++++ qemu-11.1.3/util/oslib-posix.c	2026-11-15 00:16:38
+@@ -61,6 +61,47 @@
+ #include "qemu/memalign.h"
+ #include "qemu/mmap-alloc.h"
+ 
++#ifdef __ANDROID__
++/*
++ * bionic has no POSIX shared memory (no /dev/shm).  Emulate shm_open() and
++ * shm_unlink() with regular files below $TMPDIR, which is the only
++ * guaranteed-writable place for an app-private process.
++ */
++static char *android_shm_path(const char *name)
++{
++    const char *tmpdir = getenv("TMPDIR");
++
++    while (name[0] == '/') {
++        ++name;
++    }
++    if (name[0] == '\0') {
++        errno = EINVAL;
++        return NULL;
++    }
++    if (!tmpdir || !tmpdir[0]) {
++        tmpdir = "/data/local/tmp";
++    }
++    return g_strdup_printf("%s/%s", tmpdir, name);
++}
++
++static int shm_unlink(const char *name)
++{
++    g_autofree char *fname = android_shm_path(name);
++
++    return fname ? unlink(fname) : -1;
++}
++
++static int shm_open(const char *name, int oflag, mode_t mode)
++{
++    g_autofree char *fname = android_shm_path(name);
++
++    if (!fname) {
++        return -1;
++    }
++    return open(fname, oflag | O_CLOEXEC, mode);
++}
++#endif /* __ANDROID__ */
++
+ #define MAX_MEM_PREALLOC_THREAD_COUNT 32
+ 
+ struct MemsetThread;
+--- qemu-11.1.3.orig/system/vl.c	2026-11-15 00:15:37
++++ qemu-11.1.3/system/vl.c	2026-11-15 00:16:38
+@@ -144,6 +144,44 @@
+ #include "qemu/guest-random.h"
+ #include "qemu/keyval.h"
+ #include "memory-internal.h"
++
++#ifdef __ANDROID__
++#include <dlfcn.h>
++#include <malloc.h>
++/*
++ * Android 11+ tags native heap pointers (top-byte-ignore).  QEMU stores
++ * host pointers in places that assume the top byte is clear, which leads
++ * to crashes on Android 12+ devices (termux-packages 0016 patch).  Turn
++ * heap tagging off for this process before anything of substance is
++ * allocated.
++ */
++static void android_disable_tags(void)
++{
++    void *libc = dlopen("libc.so", RTLD_LAZY);
++
++    if (!libc) {
++        return;
++    }
++    if (android_get_device_api_level() >= 31) {
++        int (*mallopt_fn)(int, int) = dlsym(libc, "mallopt");
++        if (mallopt_fn) {
++            mallopt_fn(-204 /* M_BIONIC_SET_HEAP_TAGGING_LEVEL */,
++                       0 /* M_HEAP_TAGGING_LEVEL_NONE */);
++        }
++    } else {
++        bool (*android_mallopt_fn)(int, void *, size_t) =
++            dlsym(libc, "android_mallopt");
++        if (android_mallopt_fn) {
++            int level = 0;
++            android_mallopt_fn(8 /* M_SET_HEAP_TAGGING_LEVEL */,
++                               &level, sizeof(level));
++        }
++    }
++    dlclose(libc);
++}
++#else
++static void android_disable_tags(void) {}
++#endif
+ 
+ #define MAX_VIRTIO_CONSOLES 1
+ 
+@@ -2860,6 +2898,8 @@
+     MachineClass *machine_class;
+     bool userconfig = true;
+     FILE *vmstate_dump_file = NULL;
++
++    android_disable_tags();
+ 
+     qemu_add_opts(&qemu_drive_opts);
+     qemu_add_drive_opts(&qemu_legacy_drive_opts);

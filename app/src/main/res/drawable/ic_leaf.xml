@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stylised maple leaf inside the adaptive-icon safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,26 L59,38 L67,34 L65,48 L76,44 L72,55 L80,59 L66,68 L68,74 L56,72 L56,84 L52,84 L52,72 L40,74 L42,68 L28,59 L36,55 L32,44 L43,48 L41,34 L49,38 Z" />
+</vector>

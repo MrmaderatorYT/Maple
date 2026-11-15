@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="os_linux">Linux</string>
+    <string name="os_android">Android-x86 / BlissOS</string>
+    <string name="os_win_xp">Windows XP / 2000</string>
+    <string name="os_win_7">Windows Vista / 7</string>
+    <string name="os_win_10">Windows 8 / 10</string>
+    <string name="os_win_11">Windows 11</string>
+    <string name="os_freebsd">FreeBSD</string>
+    <string name="os_openbsd">OpenBSD</string>
+    <string name="os_netbsd">NetBSD</string>
+    <string name="os_dos">DOS / FreeDOS</string>
+    <string name="os_reactos">ReactOS</string>
+    <string name="os_haiku">Haiku</string>
+    <string name="os_other">Інша</string>
+
+    <string name="empty_list">Віртуальних машин ще немає.\n\nНатисніть «Нова ВМ», щоб завантажити власний ISO чи образ диска, або відкрийте бібліотеку ОС і завантажте безкоштовну операційну систему.</string>
+    <string name="none">Немає</string>
+    <string name="auto">Автоматично</string>
+
+    <string name="state_starting">Запускається</string>
+    <string name="state_running">Працює</string>
+    <string name="state_paused">На паузі</string>
+    <string name="state_stopping">Зупиняється</string>
+    <string name="state_stopped">Зупинена</string>
+    <string name="state_suspended">Призупинена</string>
+
+    <string name="action_new_vm">Нова ВМ</string>
+    <string name="action_library">Бібліотека ОС</string>
+    <string name="action_import_utm">Імпортувати ВМ з UTM</string>
+    <string name="action_about">Про застосунок</string>
+    <string name="action_open">Відкрити</string>
+    <string name="action_start">Запустити</string>
+    <string name="action_stop">Зупинити</string>
+    <string name="action_edit">Редагувати ВМ</string>
+    <string name="action_delete">Видалити</string>
+    <string name="action_discard_state">Відкинути збережений стан</string>
+    <string name="action_shortcut">Додати на головний екран</string>
+    <string name="action_choose">Вибрати…</string>
+    <string name="action_eject">Вийняти</string>
+    <string name="action_remove">Прибрати</string>
+    <string name="action_new_disk">Новий диск…</string>
+    <string name="action_save">Зберегти</string>
+    <string name="action_open_settings">Відкрити налаштування</string>
+    <string name="action_download">Завантажити</string>
+    <string name="action_create_vm">Створити ВМ</string>
+    <string name="action_keep">Продовжити завантаження</string>
+    <string name="action_cancel_download">Скасувати завантаження</string>
+
+    <string name="confirm_delete">Видалити цю ВМ разом із диском? Цю дію не можна скасувати.</string>
+    <string name="confirm_delete_disk">Видалити образ диска цієї ВМ і все, що на ньому? Цю дію не можна скасувати.</string>
+    <string name="about_text">Maple запускає віртуальні машини x86-64 та ARM64 на телефоні за допомогою QEMU. Без root, облікових записів, реклами й стеження – ваші файли не залишають пристрій.\n\nQEMU – вільне програмне забезпечення під ліцензією GNU GPL версії 2; його вихідний код і скрипти збірки містяться в каталозі native/qemu вихідного коду застосунку.\n\nMaple не пов\'язаний із QEMU, Microsoft, Google чи виробниками операційних систем. Усі назви є торговими марками відповідних власників.</string>
+
+    <string name="utm_hint">Виберіть теку .utm віртуальної машини (у ній є config.plist і тека Data). Диск буде скопійовано в Maple.</string>
+    <string name="utm_importing">Імпорт віртуальної машини…</string>
+    <string name="utm_imported">Віртуальну машину імпортовано</string>
+
+    <string name="sec_general">Загальне</string>
+    <string name="sec_media">Диски</string>
+    <string name="sec_system">Система</string>
+    <string name="sec_display">Екран</string>
+    <string name="sec_input">Введення</string>
+    <string name="sec_network">Мережа і звук</string>
+    <string name="sec_share">Спільна тека</string>
+
+    <string name="f_name">Назва</string>
+    <string name="f_installer">Інсталятор або live-образ (ISO, IMG)</string>
+    <string name="f_boot_cd_first">Завантажуватися з образу інсталятора перед диском</string>
+    <string name="f_disk">Жорсткий диск (QCOW2, IMG, VHD, VHDX, VMDK, VDI, QED, Parallels, DMG, Bochs)</string>
+    <string name="f_os">Операційна система</string>
+    <string name="f_arch">Архітектура</string>
+    <string name="f_firmware">Мікропрограма</string>
+    <string name="f_ram">Пам\'ять (МБ)</string>
+    <string name="f_cpus">Ядра процесора</string>
+    <string name="f_profile">Профіль продуктивності</string>
+    <string name="f_win11_helper">Помічник встановлення Windows 11 (без перевірок TPM, Secure Boot, пам\'яті та процесора)</string>
+    <string name="f_suspend_on_stop">Призупиняти під час зупинки (продовжити з того ж місця; потрібен диск QCOW2)</string>
+    <string name="f_resolution">Розмір екрана</string>
+    <string name="f_scaling">Масштабування</string>
+    <string name="f_orientation">Орієнтація</string>
+    <string name="f_high_refresh">Плавний екран до 144 Гц</string>
+    <string name="f_input_mode">Режим вказівника</string>
+    <string name="f_pointer_speed">Швидкість вказівника</string>
+    <string name="f_network">Доступ гостя до інтернету</string>
+    <string name="f_forwards">Переадресація портів (протокол:порт телефона:порт гостя)</string>
+    <string name="f_sound">Звук</string>
+    <string name="f_share_writable">Дозволити гостю запис у теку (експериментально)</string>
+
+    <string name="profile_balanced">Збалансований</string>
+    <string name="profile_max">Максимальна продуктивність</string>
+    <string name="profile_sustained">Тривалий (менше нагріву, для довгих сеансів)</string>
+    <string name="scale_fit">Вписати в екран</string>
+    <string name="scale_stretch">Розтягнути</string>
+    <string name="scale_integer">Піксель у піксель</string>
+    <string name="orient_landscape">Альбомна</string>
+    <string name="orient_portrait">Книжкова</string>
+    <string name="input_trackpad">Трекпад</string>
+    <string name="input_touch">Прямий дотик</string>
+    <string name="input_mouse">Фізична миша</string>
+
+    <string name="disk_new">Новий диск на %1$d ГБ (буде створено під час збереження)</string>
+    <string name="disk_internal">Внутрішній диск (%1$s)</string>
+    <string name="disk_size_title">Новий диск</string>
+    <string name="disk_size_text">Розмір у ГБ. Образ росте в міру запису гостем, тож спочатку він малий.</string>
+    <string name="creating_disk">Створення диска…</string>
+    <string name="inspecting">Читання образу…</string>
+    <string name="detected">Визначено: %1$s, %2$s, %3$s</string>
+    <string name="share_hint">Тека з\'являється в гості як USB-накопичувач. Зміни, зроблені на телефоні, видно після перезапуску ВМ.</string>
+    <string name="share_permission">Щоб поділитися текою, Maple потрібен дозвіл «Доступ до всіх файлів», аби емулятор міг читати її напряму. Нічого нікуди не надсилається.</string>
+
+    <string name="err_name">Дайте ВМ назву</string>
+    <string name="err_ram">Введіть від 16 до 16384 МБ</string>
+    <string name="err_forwards">Використовуйте записи на кшталт tcp:2222:22 з портами телефона від 1024 до 65535</string>
+    <string name="err_disk_size">Введіть розмір від 1 до 2048 ГБ</string>
+    <string name="err_share_path">Цією текою не можна поділитися. Виберіть теку в пам\'яті телефона або на SD-картці.</string>
+    <string name="err_no_persist">Доступ до цього файла буде втрачено після перезапуску; виберіть його знову, якщо ВМ перестане завантажуватися.</string>
+    <string name="err_no_qemu_title">Немає рушія емуляції</string>
+    <string name="err_no_qemu_text">Ця збірка не містить бінарних файлів QEMU. Запустіть native/qemu/build.sh і зберіть застосунок знову.</string>
+    <string name="err_nothing_to_boot">Спершу додайте образ інсталятора або диск</string>
+    <string name="err_shortcut">Ваш лаунчер не підтримує закріплені ярлики</string>
+    <string name="err_vm_missing">Цієї віртуальної машини більше не існує</string>
+    <string name="err_vm_stopped">ВМ зупинилася</string>
+    <string name="err_spawn">Не вдалося запустити процес емулятора</string>
+    <string name="err_qmp">Емулятор не відповів</string>
+    <string name="err_exit">Емулятор завершився з кодом %1$d</string>
+    <string name="err_resume_failed">Збережений стан не вдалося відновити, його відкинуто. Запустіть ВМ ще раз для звичайного завантаження.</string>
+    <string name="err_save_state">Не вдалося зберегти стан: %1$s</string>
+    <string name="err_load_state">Не вдалося завантажити стан: %1$s</string>
+    <string name="err_not_running">ВМ не працює</string>
+    <string name="err_screenshot">Не вдалося зробити знімок екрана</string>
+    <string name="err_pip">Режим «картинка в картинці» недоступний на цьому пристрої</string>
+
+    <string name="msg_state_saved">Стан збережено</string>
+    <string name="msg_state_loaded">Стан завантажено</string>
+    <string name="msg_saving_state">Збереження стану…</string>
+    <string name="msg_screenshot_saved">Знімок збережено в Pictures/Maple</string>
+
+    <string name="status_starting">Запуск…</string>
+    <string name="status_resuming">Відновлення…</string>
+    <string name="status_paused">Пауза</string>
+    <string name="status_paused_heat">Пауза – телефон перегрівся.\nВМ продовжить роботу, коли він охолоне.</string>
+    <string name="status_stopping">Зупинка…</string>
+    <string name="status_saving">Збереження стану…</string>
+
+    <string name="m_keyboard">Клавіатура</string>
+    <string name="m_show_keys">Показати додаткові клавіші</string>
+    <string name="m_hide_keys">Сховати додаткові клавіші</string>
+    <string name="m_show_hud">Показати HUD</string>
+    <string name="m_hide_hud">Сховати HUD</string>
+    <string name="m_pause">Пауза</string>
+    <string name="m_resume">Продовжити</string>
+    <string name="m_unplug">Від\'єднати мережевий кабель</string>
+    <string name="m_plug">Під\'єднати мережевий кабель</string>
+    <string name="m_screenshot">Знімок екрана</string>
+    <string name="m_save_state">Зберегти стан</string>
+    <string name="m_load_state">Завантажити збережений стан</string>
+    <string name="m_pip">Картинка в картинці</string>
+    <string name="m_power_button">Натиснути кнопку живлення</string>
+    <string name="m_reset">Перезавантажити</string>
+    <string name="m_suspend">Призупинити й закрити</string>
+    <string name="m_stop_no_save">Зупинити без збереження</string>
+
+    <string name="lib_tap_to_download">Натисніть, щоб завантажити</string>
+    <string name="lib_downloaded">Завантажено – натисніть, щоб створити ще одну ВМ</string>
+    <string name="lib_downloading">Завантажено %1$s із %2$s</string>
+    <string name="lib_verifying">Перевірка контрольної суми…</string>
+    <string name="lib_unpacking">Розпакування…</string>
+    <string name="lib_creating">Створення ВМ…</string>
+    <string name="lib_done">ВМ створено – вона у вашому списку</string>
+    <string name="lib_cancelled">Скасовано – натисніть, щоб продовжити</string>
+    <string name="lib_failed">Помилка: %1$s</string>
+    <string name="lib_cancel_question">Скасувати це завантаження? Уже завантажена частина зберігається, тож можна продовжити пізніше.</string>
+    <string name="lib_confirm">Завантажити %1$s з офіційного дзеркала?\n\n%2$s\n\nПеред використанням файл звіряється з контрольною сумою видавця.</string>
+    <string name="lib_confirm_reuse">Цей образ (%1$s) уже завантажено. Створити з нього нову ВМ?\n\n%2$s</string>
+    <string name="lib_vm_created">%1$s готова у списку ВМ</string>
+
+    <string name="channel_running">Запущені ВМ</string>
+    <string name="channel_alerts">Попередження про нагрів і батарею</string>
+    <plurals name="note_running">
+        <item quantity="one">Працює %1$d ВМ</item>
+        <item quantity="few">Працюють %1$d ВМ</item>
+        <item quantity="many">Працює %1$d ВМ</item>
+        <item quantity="other">Працює %1$d ВМ</item>
+    </plurals>
+    <string name="note_battery_title">Низький заряд батареї</string>
+    <string name="note_battery_text">ВМ досі працює. Вимкніть її або під\'єднайте телефон до зарядки.</string>
+    <string name="note_heat_title">ВМ на паузі: телефон перегрівся</string>
+    <string name="note_heat_text">Вона продовжить роботу автоматично, коли телефон охолоне.</string>
+</resources>
