@@ -6,9 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.Settings;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +30,7 @@ import com.ccs.maple.model.VmConfig;
 import com.ccs.maple.model.VmStore;
 import com.ccs.maple.qemu.QemuAssets;
 import com.ccs.maple.qemu.QemuCommandBuilder;
+import com.ccs.maple.util.SharedFolder;
 
 import java.io.File;
 import java.util.List;
@@ -288,10 +286,7 @@ public final class EditVmActivity extends Activity {
         section(R.string.sec_share);
         shareInfo = info();
         buttons(new int[]{R.string.action_choose, R.string.action_remove},
-                new View.OnClickListener[]{v -> pickShare(), v -> {
-                    vm.sharedFolder = "";
-                    refreshMedia();
-                }});
+                new View.OnClickListener[]{v -> pickShare(), v -> removeShare()});
         shareWritable = check(R.string.f_share_writable);
         TextView hint = label(R.string.share_hint);
         hint.setPadding(0, 0, 0, 0);
@@ -374,7 +369,8 @@ public final class EditVmActivity extends Activity {
         } else {
             diskInfo.setText(R.string.none);
         }
-        shareInfo.setText(vm.sharedFolder.isEmpty() ? getString(R.string.none) : vm.sharedFolder);
+        shareInfo.setText(vm.sharedUri.isEmpty() ? getString(R.string.none)
+                : SharedFolder.displayName(this, Uri.parse(vm.sharedUri)));
     }
 
     // ------------------------------------------------------------------ media pickers
@@ -424,39 +420,21 @@ public final class EditVmActivity extends Activity {
     }
 
     private void pickShare() {
-        if (!Environment.isExternalStorageManager()) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.sec_share)
-                    .setMessage(R.string.share_permission)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.action_open_settings, (d, w) -> {
-                        try {
-                            startActivity(new Intent(
-                                    Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                                    Uri.parse("package:" + getPackageName())));
-                        } catch (Exception e) {
-                            startActivity(new Intent(
-                                    Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION));
-                        }
-                    })
-                    .show();
-            return;
-        }
         startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), REQ_SHARE);
     }
 
-    /** Converts an external-storage tree URI to a file path QEMU can open. */
-    private static String treeToPath(Uri tree) {
-        if (!"com.android.externalstorage.documents".equals(tree.getAuthority())) return null;
-        String docId = DocumentsContract.getTreeDocumentId(tree);
-        int colon = docId.indexOf(':');
-        if (colon < 0) return null;
-        String volume = docId.substring(0, colon);
-        String rel = docId.substring(colon + 1);
-        String base = "primary".equalsIgnoreCase(volume)
-                ? Environment.getExternalStorageDirectory().getAbsolutePath()
-                : "/storage/" + volume;
-        return rel.isEmpty() ? base : base + "/" + rel;
+    private void removeShare() {
+        if (!vm.sharedUri.isEmpty()) {
+            try {
+                getContentResolver().releasePersistableUriPermission(Uri.parse(vm.sharedUri),
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            } catch (SecurityException ignored) {
+                // already gone
+            }
+        }
+        vm.sharedUri = "";
+        refreshMedia();
     }
 
     @Override
@@ -465,11 +443,15 @@ public final class EditVmActivity extends Activity {
         if (resultCode != RESULT_OK || data == null || data.getData() == null) return;
         Uri uri = data.getData();
         if (requestCode == REQ_SHARE) {
-            String path = treeToPath(uri);
-            if (path == null || !new File(path).isDirectory()) {
+            // Read access lets the VM see the folder; write access lets guest changes be
+            // copied back. Both survive restarts because the grant is persisted.
+            try {
+                getContentResolver().takePersistableUriPermission(uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                vm.sharedUri = uri.toString();
+            } catch (SecurityException e) {
                 Toast.makeText(this, R.string.err_share_path, Toast.LENGTH_LONG).show();
-            } else {
-                vm.sharedFolder = path;
             }
             refreshMedia();
             return;

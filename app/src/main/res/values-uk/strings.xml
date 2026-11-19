@@ -105,14 +105,19 @@
     <string name="creating_disk">Створення диска…</string>
     <string name="inspecting">Читання образу…</string>
     <string name="detected">Визначено: %1$s, %2$s, %3$s</string>
-    <string name="share_hint">Тека з\'являється в гості як USB-накопичувач. Зміни, зроблені на телефоні, видно після перезапуску ВМ.</string>
-    <string name="share_permission">Щоб поділитися текою, Maple потрібен дозвіл «Доступ до всіх файлів», аби емулятор міг читати її напряму. Нічого нікуди не надсилається.</string>
+    <string name="share_hint">Виберіть теку на телефоні. Її файли копіюються у ВМ під час запуску й з\'являються там як USB-накопичувач (до 480 МБ). Якщо запис дозволено, файли, які ВМ створила чи змінила, копіюються назад після її вимкнення. Файли, видалені у ВМ, на телефоні лишаються.</string>
 
     <string name="err_name">Дайте ВМ назву</string>
     <string name="err_ram">Введіть від 16 до 16384 МБ</string>
     <string name="err_forwards">Використовуйте записи на кшталт tcp:2222:22 з портами телефона від 1024 до 65535</string>
     <string name="err_disk_size">Введіть розмір від 1 до 2048 ГБ</string>
-    <string name="err_share_path">Цією текою не можна поділитися. Виберіть теку в пам\'яті телефона або на SD-картці.</string>
+    <string name="err_share_path">Maple не отримав доступу до цієї теки. Виберіть іншу.</string>
+    <string name="share_copying">Копіювання спільної теки у ВМ…</string>
+    <string name="share_too_large">Спільна тека більша за %1$s — це межа для спільного диска. ВМ запуститься без неї.</string>
+    <string name="share_failed">Не вдалося скопіювати спільну теку: %1$s</string>
+    <string name="share_unavailable">Спільна тека недоступна для цього запуску.</string>
+    <string name="share_saved">Файлів скопійовано назад у спільну теку: %1$d</string>
+    <string name="share_save_failed">Ці файли не вдалося скопіювати назад у спільну теку: %1$s</string>
     <string name="err_no_persist">Доступ до цього файла буде втрачено після перезапуску; виберіть його знову, якщо ВМ перестане завантажуватися.</string>
     <string name="err_no_qemu_title">Немає рушія емуляції</string>
     <string name="err_no_qemu_text">Ця збірка не містить бінарних файлів QEMU. Запустіть native/qemu/build.sh і зберіть застосунок знову.</string>

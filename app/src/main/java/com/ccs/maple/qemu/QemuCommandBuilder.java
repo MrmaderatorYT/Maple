@@ -9,9 +9,11 @@ import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.view.Display;
 
+import com.ccs.maple.R;
 import com.ccs.maple.model.OsType;
 import com.ccs.maple.model.VmConfig;
 import com.ccs.maple.util.Io;
+import com.ccs.maple.util.SharedFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -495,16 +497,17 @@ public final class QemuCommandBuilder {
     // ---------------------------------------------------------------- shared folder, helpers
 
     private void extras(boolean arm) throws IOException {
-        if (!vm.sharedFolder.isEmpty() && vm.os != OsType.DOS) {
-            File dir = new File(vm.sharedFolder);
-            if (dir.isDirectory() && dir.canRead()) {
+        if (!vm.sharedUri.isEmpty() && vm.os != OsType.DOS) {
+            // VmSession mirrors the picked folder into this private directory before start.
+            File dir = SharedFolder.stagingDir(vmDir);
+            if (dir.isDirectory()) {
                 String fat = vm.sharedWritable ? "fat:rw:" : "fat:";
                 add("-drive", "if=none,id=share0,format=raw"
                         + (vm.sharedWritable ? "" : ",read-only=on")
                         + ",file=" + fat + esc(dir.getAbsolutePath()));
                 add("-device", "usb-storage,drive=share0,removable=on,bus=" + storageUsbBus);
             } else {
-                r.warnings.add("Shared folder is not accessible: " + vm.sharedFolder);
+                r.warnings.add(ctx.getString(R.string.share_unavailable));
             }
         }
         if (vm.win11Helper && vm.os == OsType.WIN_11) {

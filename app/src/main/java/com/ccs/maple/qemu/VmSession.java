@@ -1,6 +1,7 @@
 package com.ccs.maple.qemu;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import android.system.Os;
@@ -11,6 +12,7 @@ import com.ccs.maple.R;
 import com.ccs.maple.model.VmConfig;
 import com.ccs.maple.model.VmStore;
 import com.ccs.maple.util.Io;
+import com.ccs.maple.util.SharedFolder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -139,6 +141,7 @@ public final class VmSession implements QmpClient.EventListener {
     }
 
     private void startBlocking() {
+        prepareShare();
         QemuCommandBuilder.Result cmd;
         try {
             cmd = new QemuCommandBuilder(app, vm, vmDir).build();
@@ -260,8 +263,43 @@ public final class VmSession implements QmpClient.EventListener {
             }
         }
         vcpuLoad = new float[0];
+        saveShare();
         setState(State.STOPPED);
         VmService.onSessionStopped(this);
+    }
+
+    // ------------------------------------------------------------------ shared folder
+
+    /** Mirrors the picked folder into the VM's private directory that QEMU serves. */
+    private void prepareShare() {
+        if (vm.sharedUri.isEmpty()) return;
+        File staging = SharedFolder.stagingDir(vmDir);
+        if (vm.hasSuspendState && staging.isDirectory()) {
+            // The saved guest has this drive's contents cached; changing them under it would
+            // corrupt what the guest sees.
+            return;
+        }
+        message(app.getString(R.string.share_copying));
+        try {
+            SharedFolder.stage(app, Uri.parse(vm.sharedUri), vmDir);
+        } catch (SharedFolder.TooLargeException e) {
+            Io.deleteRecursive(staging);
+            message(app.getString(R.string.share_too_large, Io.humanSize(SharedFolder.MAX_BYTES)));
+        } catch (Exception e) {
+            Log.w(TAG, "share staging failed", e);
+            Io.deleteRecursive(staging);
+            message(app.getString(R.string.share_failed, String.valueOf(e.getMessage())));
+        }
+    }
+
+    /** Copies files the guest created or changed back into the picked folder. */
+    private void saveShare() {
+        if (vm.sharedUri.isEmpty() || !vm.sharedWritable) return;
+        SharedFolder.WriteBack r = SharedFolder.writeBack(app, Uri.parse(vm.sharedUri), vmDir);
+        if (r.copied > 0) message(app.getString(R.string.share_saved, r.copied));
+        if (!r.failed.isEmpty()) {
+            message(app.getString(R.string.share_save_failed, String.join(", ", r.failed)));
+        }
     }
 
     /** Stops the VM. With {@code allowSuspend} the VM state is saved first if configured. */

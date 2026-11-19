@@ -62,8 +62,11 @@ public final class VmConfig {
     public final List<String> portForwards = new ArrayList<>();
     public boolean sound = true;
 
-    /** Absolute host directory exposed to the guest as a FAT USB drive, or "". */
-    public String sharedFolder = "";
+    /**
+     * Folder picked with the system folder picker (a document tree URI), exposed to the guest
+     * as a FAT USB drive, or "". See {@link com.ccs.maple.util.SharedFolder}.
+     */
+    public String sharedUri = "";
     public boolean sharedWritable = false;
 
     public String profile = PROFILE_BALANCED;
@@ -123,7 +126,7 @@ public final class VmConfig {
         for (String s : portForwards) pf.put(s);
         o.put("portForwards", pf);
         o.put("sound", sound);
-        o.put("sharedFolder", sharedFolder);
+        o.put("sharedUri", sharedUri);
         o.put("sharedWritable", sharedWritable);
         o.put("profile", profile);
         o.put("displayWidth", displayWidth);
@@ -165,7 +168,9 @@ public final class VmConfig {
             for (int i = 0; i < pf.length(); i++) c.portForwards.add(pf.optString(i));
         }
         c.sound = o.optBoolean("sound", true);
-        c.sharedFolder = o.optString("sharedFolder", "");
+        // Older versions stored a file path ("sharedFolder"); it cannot be used without broad
+        // storage access, so such a share is dropped and has to be picked again.
+        c.sharedUri = o.optString("sharedUri", "");
         c.sharedWritable = o.optBoolean("sharedWritable", false);
         c.profile = o.optString("profile", PROFILE_BALANCED);
         c.displayWidth = o.optInt("displayWidth", 1024);

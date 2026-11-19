@@ -107,14 +107,19 @@
     <string name="creating_disk">Creating disk…</string>
     <string name="inspecting">Reading image…</string>
     <string name="detected">Detected %1$s, %2$s, %3$s</string>
-    <string name="share_hint">The folder appears in the guest as a USB drive. Changes made on the phone show up after the VM restarts.</string>
-    <string name="share_permission">To share a folder, Maple needs the “All files access” permission so that the emulator can read it directly. Nothing is uploaded anywhere.</string>
+    <string name="share_hint">Choose a folder on the phone. Its files are copied into the VM when it starts and appear there as a USB drive (up to 480 MB). If writing is allowed, files the VM creates or changes are copied back when it shuts down. Files deleted in the VM stay on the phone.</string>
 
     <string name="err_name">Give the VM a name</string>
     <string name="err_ram">Enter between 16 and 16384 MB</string>
     <string name="err_forwards">Use entries like tcp:2222:22 with phone ports from 1024 to 65535</string>
     <string name="err_disk_size">Enter a size between 1 and 2048 GB</string>
-    <string name="err_share_path">That folder cannot be shared. Choose a folder on the phone\'s storage or an SD card.</string>
+    <string name="err_share_path">Maple could not get access to that folder. Choose another one.</string>
+    <string name="share_copying">Copying the shared folder into the VM…</string>
+    <string name="share_too_large">The shared folder is larger than %1$s, the limit for a shared drive. The VM starts without it.</string>
+    <string name="share_failed">Could not copy the shared folder: %1$s</string>
+    <string name="share_unavailable">The shared folder is not available for this start.</string>
+    <string name="share_saved">Files copied back to the shared folder: %1$d</string>
+    <string name="share_save_failed">These files could not be copied back to the shared folder: %1$s</string>
     <string name="err_no_persist">Access to this file will be lost after a restart; choose it again if the VM stops booting.</string>
     <string name="err_no_qemu_title">Emulator engine missing</string>
     <string name="err_no_qemu_text">This build does not contain the QEMU binaries. Run native/qemu/build.sh and rebuild the app.</string>

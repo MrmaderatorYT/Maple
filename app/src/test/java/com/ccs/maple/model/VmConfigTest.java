@@ -27,7 +27,7 @@ public class VmConfigTest {
         a.portForwards.add("tcp:2222:22");
         a.portForwards.add("udp:5000:5000");
         a.sound = false;
-        a.sharedFolder = "/sdcard/share";
+        a.sharedUri = "content://com.android.externalstorage.documents/tree/primary%3AShare";
         a.sharedWritable = true;
         a.profile = VmConfig.PROFILE_SUSTAINED;
         a.displayWidth = 1280;
@@ -59,7 +59,7 @@ public class VmConfigTest {
         assertEquals(a.network, b.network);
         assertEquals(a.portForwards, b.portForwards);
         assertEquals(a.sound, b.sound);
-        assertEquals(a.sharedFolder, b.sharedFolder);
+        assertEquals(a.sharedUri, b.sharedUri);
         assertEquals(a.sharedWritable, b.sharedWritable);
         assertEquals(a.profile, b.profile);
         assertEquals(a.displayWidth, b.displayWidth);
